@@ -1,7 +1,7 @@
 import { useState } from "react";
 import FormInput from "../components/formInput";
 import { useNavigate } from "react-router-dom";
-import { Lock, User, Mail, Calendar } from "lucide-react";
+import { User, Mail, Calendar } from "lucide-react";
 
 function Register() {
   const [formData, setFormData] = useState({
