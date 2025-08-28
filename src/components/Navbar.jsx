@@ -3,7 +3,7 @@ import CartButton from "./CartButton";
 import DashboardButton from "./DashboardButton";
 import NavbarBase from "./NavbarBase";
 import Icon from "./Icon";
-function Navbar({ isLogin, isAdmin, logOut, cartItem }) {
+function Navbar({ isLogin, isAdmin, logOut }) {
   //logo/nombre
   //navegacion
 
@@ -14,7 +14,7 @@ function Navbar({ isLogin, isAdmin, logOut, cartItem }) {
       </div>
       <div className="bg-gray-900 w-full flex items-center justify-end gap-4 py-2 px-2">
         <NavbarBase />
-        <CartButton cartItem={cartItem} isLogin={isLogin} />
+        <CartButton isLogin={isLogin} />
         <DashboardButton isAdmin={isAdmin} />
         <AuthButtons isLogin={isLogin} logOut={logOut} />
       </div>
