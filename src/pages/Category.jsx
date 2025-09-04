@@ -18,7 +18,7 @@ function Category() {
       setProducts(data);
     }
   }
-
+  
   return (
     <div>{products.length > 0 && <ProductList products={products} />}</div>
   );

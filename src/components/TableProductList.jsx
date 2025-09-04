@@ -1,20 +1,17 @@
-import { useState } from "react"
 import { BadgeCheck,BadgeAlert,Trash,Eye,EyeOff,SquarePen } from "lucide-react"
+import useProducts from "../hooks/useProducts"
 
 
 function TableProductList() {
-    const [products,setProducts] = useState([])
+    const {products,isLoading,error} = useProducts()
 
-    useState(()=>{
-        pedirProductos()
-    },[])
-
-    async function pedirProductos(){
-        const res = await fetch(`https://fakestoreapi.com/products/`)
-        const data = await res.json()
-        setProducts(data)
+    if(isLoading) {
+        return (<div>cargando...</div>)
     }
 
+    if(error) {
+        return (<div>error:{error}</div>)
+    }
 
     return <div className="text-white">
         <table>
