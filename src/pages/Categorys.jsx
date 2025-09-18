@@ -1,31 +1,7 @@
-import manClothes from "../assets/manClothesC.jpg";
-import womenClothes from "../assets/womenClothesC.jpg";
-import electronic from "../assets/electronicC.jpg";
-import jewelery from "../assets/jeweleryC.jpg";
 import CategoryItem from "../components/CategoryItem";
+import useCategories from "../hooks/useCategories";
 function Categorys() {
-  const categories = [
-    {
-      href: "/men's clothing",
-      name: "men's clothing",
-      img: manClothes,
-    },
-    {
-      href: "/women's clothing",
-      name: "women's clothing",
-      img: womenClothes,
-    },
-    {
-      href: "/electronics",
-      name: "electronics",
-      img: electronic,
-    },
-    {
-      href: "/jewelery",
-      name: "jewelery",
-      img: jewelery,
-    },
-  ];
+  const {categories,isLoading,error} = useCategories()
 
   return (
     <div className="relative min-h-screen text-white overflow-hidden bg-gray-700 pt-16 ">

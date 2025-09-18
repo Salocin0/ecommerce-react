@@ -25,9 +25,21 @@ function FormProducto(){
         navigate(-1)
     }
 
-    function saveProduct(e){
+    async function saveProduct(e){
         e.preventDefault();
         console.log(formData)
+        const respuesta = await fetch("http://localhost:3000/api/products",{
+          method:"POST",
+          body:JSON.stringify({
+            name:"ejemploDesdeWeb",
+            price:99,
+          }),
+          headers:{
+            "Content-Type":"application/json"
+          }
+        })
+        const data = await respuesta.json()
+        console.log(data)
     }
 
     return (
