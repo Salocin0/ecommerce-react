@@ -10,6 +10,11 @@ const tabs =[
         id:2,
         label:"Product List",
         icon:ShoppingBasket
+    },
+    {
+        id:3,
+        label:"Create Category",
+        icon:PlusCircle
     }
 ]
 

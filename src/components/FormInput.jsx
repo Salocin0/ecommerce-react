@@ -16,7 +16,7 @@ function FormInput({
       <input
         type={inputType}
         placeholder={placeholder}
-        value={value}
+        value={inputType === "file" ? undefined : value}
         onChange={onChangeFn}
         required={isRequired}
         className="w-full px-6 py-3 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
