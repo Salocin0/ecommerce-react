@@ -2,29 +2,33 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FormInput from "../components/formInput";
 import { User, Mail } from "lucide-react";
-function Login({ login, loginAsAdmin }) {
+import { useAuth } from "../hooks/useAuth";
+import { toast } from "react-toastify";
+
+function Login() {
   const [formData, setFormData] = useState({
     email: "", //admin@admin.com
     contrasenia: "", //admin
   });
 
+  const {login,user}= useAuth()
+
   const navigate = useNavigate()
 
-  function loginUser(e) {
+  async function loginUser(e) {
     e.preventDefault();
-    //fetch al back (user) user.rol
-    if (
-      formData.email == "admin@admin.com" &&
-      formData.contrasenia == "admin"
-    ) {
-      loginAsAdmin();
-      navigate("/dashboard")
-    } else {
-      login();
-      navigate("/")
+
+    const result = await login(formData.email,formData.contrasenia)
+
+    if (result.success){
+      toast.success("inicio de sesion exitoso")
+      if(user.role=="admin"){
+        navigate("/dashboard")
+      }else{
+        navigate("/")
+      }
     }
-    console.log(formData);
-    //fetch al back para validar los datos del usuario
+
   }
 
   function navigateToHome() {

@@ -2,6 +2,7 @@ import { useState } from "react";
 import FormInput from "../components/formInput";
 import { useNavigate } from "react-router-dom";
 import { User, Mail, Calendar } from "lucide-react";
+import { toast } from "react-toastify";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -24,10 +25,37 @@ function Register() {
     navigate(-1);
   }
 
-  function registerUser(e) {
+  async function registerUser(e) {
     e.preventDefault();
     console.log(formData);
-    //fetch al back para guardar los datos
+    
+    if(formData.confirmarContrasenia !== formData.contrasenia){
+      toast.error("las contraseñas son distintas")
+    }
+
+    try {
+      const urlapi = import.meta.env.VITE_URL_BACK || "http://localhost:3000"; 
+      const response = await fetch(`${urlapi}/api/user/register`,{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          email:formData.email,
+          password:formData.contrasenia
+        })
+      })
+
+      if(!response.ok){
+        throw new Error("error en la peticion")
+      }
+
+      toast.success("usuario registrado correctamente")
+      navigate("/login")
+    } catch (error) {
+      toast.error("error al registrar el usuario")
+      console.log(error)
+    }
   }
 
   return (

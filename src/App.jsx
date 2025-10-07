@@ -10,6 +10,8 @@ import Category from "./pages/Category";
 import Categorys from "./pages/Categorys";
 import Detalle from "./pages/Detalle";
 import CartProvider from "./hooks/CartProvider";
+import AuthProvider from "./hooks/AuthProvider";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
@@ -36,23 +38,37 @@ function App() {
   return (
     <>
       {/*otro elemento */}
-      <CartProvider>
+      <AuthProvider>
+        <CartProvider>
           <Navbar isLogin={isLogin} isAdmin={isAdmin} logOut={logOut} />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route
-            path="/login"
-            element={<Login loginAsAdmin={loginAsAdmin} login={login} />}
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route
+              path="/login"
+              element={<Login loginAsAdmin={loginAsAdmin} login={login} />}
+            />
+            <Route path="/register" element={<Register />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/category" element={<Categorys />} />
+            <Route path="/category/:category" element={<Category />} />
+            <Route path="/product/:id" element={<Detalle />} />
+            <Route path="/*" element={<h1>404</h1>} />
+          </Routes>
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
           />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/category" element={<Categorys />} />
-          <Route path="/category/:category" element={<Category />} />
-          <Route path="/product/:id" element={<Detalle />} />
-          <Route path="/*" element={<h1>404</h1>} />
-        </Routes>
-      </CartProvider>
+        </CartProvider>
+      </AuthProvider>
     </>
   );
 }
