@@ -37,7 +37,7 @@ export default function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
-      const urlapi = import.meta.env.VITE_URL_BACK || "http://localhost:3000"; //https://vercel.miproyecto.com
+      const urlapi = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000"; //https://vercel.miproyecto.com
       const response = await fetch(`${urlapi}/api/user/login`, {
         method: "POST",
         headers: {
@@ -49,9 +49,11 @@ export default function AuthProvider({ children }) {
         throw new Error("error en el login");
       }
 
-      const responseJson = await response.json();
-      const accessToken = responseJson.data.accessToken;
-      const refreshToken = responseJson.data.refreshToken;
+      const responseData = await response.json();
+      console.log(responseData);
+
+      const accessToken = responseData.data.accesstoken;
+      const refreshToken = responseData.data.refreshtoken;
 
       const userData = accessToken
         ? JSON.parse(atob(accessToken.split(".")[1]))
@@ -63,12 +65,12 @@ export default function AuthProvider({ children }) {
 
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
-      localStorage.setItem("user", userData);
+      localStorage.setItem("user", JSON.stringify(userData));
 
-      return { success: true, data: { accessToken, refreshToken } };
+      return { success: true, data: { accessToken, refreshToken, user: userData } };
     } catch (error) {
       console.log("error en el login: ", error);
-      return { success: false, data: error };
+      return { success: false, error: error.message };
     }
   };
 
@@ -101,8 +103,9 @@ export default function AuthProvider({ children }) {
       }
 
       const responseJson = await response.json();
-      const accessToken = responseJson.data.accessToken;
-      const refreshToken = responseJson.data.refreshToken
+      // El backend devuelve accesstoken y refreshtoken en minúsculas
+      const accessToken = responseJson.data.accesstoken;
+      const refreshToken = responseJson.data.refreshtoken;
 
       const userData = accessToken
         ? JSON.parse(atob(accessToken.split(".")[1]))
@@ -114,9 +117,9 @@ export default function AuthProvider({ children }) {
 
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
-      localStorage.setItem("user", userData);
+      localStorage.setItem("user", JSON.stringify(userData));
 
-      return responseJson.data
+      return { accessToken, refreshToken, user: userData }
     } catch (error) {
         console.log("error al actualizar el token: ", error)
         logout()
@@ -124,11 +127,14 @@ export default function AuthProvider({ children }) {
     }
   };
 
+  const isAuthenticated = !!accessToken && !!refreshToken
+
   const value = {
     accessToken,
     refreshToken,
     user,
     isLoading,
+    isAuthenticated,
     logout,
     login,
     refreshAccessToken

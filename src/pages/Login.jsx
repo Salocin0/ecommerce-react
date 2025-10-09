@@ -11,24 +11,27 @@ function Login() {
     contrasenia: "", //admin
   });
 
-  const {login,user}= useAuth()
+  const {login}= useAuth()
 
   const navigate = useNavigate()
 
   async function loginUser(e) {
     e.preventDefault();
 
-    const result = await login(formData.email,formData.contrasenia)
+    const result = await login(formData.email, formData.contrasenia);
 
-    if (result.success){
-      toast.success("inicio de sesion exitoso")
-      if(user.role=="admin"){
-        navigate("/dashboard")
-      }else{
-        navigate("/")
+    if (result.success) {
+      toast.success("Inicio de sesión exitoso");
+      
+      // Verificar si es admin
+      if (result.data.user?.role === 'admin' || result.data.user?.isAdmin === true) {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
       }
+    } else {
+      toast.error(result.error || "Error al iniciar sesión");
     }
-
   }
 
   function navigateToHome() {
