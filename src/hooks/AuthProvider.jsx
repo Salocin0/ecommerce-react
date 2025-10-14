@@ -99,27 +99,28 @@ export default function AuthProvider({ children }) {
         },
       });
       if (!response.ok) {
+        logout()
         throw new Error("error al obtener el accesstoken");
       }
 
       const responseJson = await response.json();
       // El backend devuelve accesstoken y refreshtoken en minúsculas
       const accessToken = responseJson.data.accesstoken;
-      const refreshToken = responseJson.data.refreshtoken;
+      //const refreshToken = responseJson.data.refreshtoken;
 
-      const userData = accessToken
+      /*const userData = accessToken
         ? JSON.parse(atob(accessToken.split(".")[1]))
         : null;
 
-      setAccessToken(accessToken)
+      
       setRefreshToken(refreshToken)
-      setUser(userData)
-
+      setUser(userData)*/
+      setAccessToken(accessToken)
       localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
-      localStorage.setItem("user", JSON.stringify(userData));
+      //localStorage.setItem("refreshToken", refreshToken);
+      //localStorage.setItem("user", JSON.stringify(userData));
 
-      return { accessToken, refreshToken, user: userData }
+      return { accessToken, refreshToken }
     } catch (error) {
         console.log("error al actualizar el token: ", error)
         logout()
