@@ -1,15 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import FormInput from "./formInput";
 import { useState } from "react";
-import { PencilLine, DollarSign } from "lucide-react";
+import { PencilLine, DollarSign, Image } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { toast } from "react-toastify";
 
 const categories = [
-  "electronics",
+  "electronic",
   "jewelery",
-  "men's clothing",
-  "women's clothing",
+  "man clothing",
+  "women clothing",
 ];
 
 function FormProducto() {
@@ -31,47 +31,82 @@ function FormProducto() {
   async function saveProduct(e) {
     e.preventDefault();
 
-    const respuesta = await fetch("http://localhost:3000/api/products", {
-      method: "POST",
-      body: JSON.stringify({
-        title: "ejemploDesdeWeb",
-        price: 99,
-        category:"man clothes"
-      }),
-      headers: {
-        "Content-Type": "application/json",
-        "authorization":accessToken
-      },
-    });
-    //validar el resultado
-    //si es 401 refrescar el token y volver a pedir
-    console.log(respuesta)
-    if (respuesta.status(401)) {
-      toast.info("token expirado refrescando")
-      await refreshAccessToken();
+    if (!formData.title || !formData.price || !formData.category) {
+      toast.error("Por favor completa todos los campos requeridos");
+      return;
+    }
 
-      const respuesta = await fetch("http://localhost:3000/api/products", {
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+    
+    const productData = {
+      title: formData.title,
+      description: formData.description,
+      price: parseFloat(formData.price),
+      category: formData.category
+    };
+
+    try {
+      let respuesta = await fetch(`${apiBaseUrl}/api/products`, {
         method: "POST",
-        body: JSON.stringify({
-          title: "ejemploDesdeWeb",
-          price: 99,
-          category:"man clothes"
-        }),
+        body: JSON.stringify(productData),
         headers: {
           "Content-Type": "application/json",
-          "authorization":accessToken
+          "authorization": `${accessToken}`
         },
       });
 
-      if (respuesta.status(401)) {
-        toast.info("ambos tokens expirados")
-        logout();
-        navigate("/login");
+      if (respuesta.status === 401) {
+        toast.info("Token expirado, refrescando...");
+        
+        const refreshResult = await refreshAccessToken();
+        
+        if (refreshResult && refreshResult.accessToken) {
+          respuesta = await fetch(`${apiBaseUrl}/api/products`, {
+            method: "POST",
+            body: JSON.stringify(productData),
+            headers: {
+              "Content-Type": "application/json",
+              "authorization": `${refreshResult.accessToken}`
+            },
+          });
+
+          console.log("llego",respuesta)
+
+          if (respuesta.status === 401) {
+            toast.error("Sesión expirada, por favor inicia sesión nuevamente");
+            logout();
+            navigate("/login");
+            return;
+          }
+        } else {
+          toast.error("No se pudo refrescar el token");
+          logout();
+          navigate("/login");
+          return;
+        }
       }
+
+      if (!respuesta.ok) {
+        throw new Error(`Error ${respuesta.status}: ${respuesta.statusText}`);
+      }
+
+      const data = await respuesta.json();
+      console.log(data);
+      toast.success("Producto creado correctamente");
+      
+      setFormData({
+        title: "",
+        description: "",
+        image: "",
+        price: "",
+        category: "",
+        id: "",
+      });
+      
+    } catch (error) {
+      console.error('Error al crear producto:', error);
+      toast.error(`Error al crear el producto: ${error.message}`);
     }
-    const data = await respuesta.json();
-    console.log(data);
-    toast.success("producto creado correctamente")
   }
 
   return (

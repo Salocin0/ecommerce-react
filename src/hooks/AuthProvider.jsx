@@ -87,10 +87,11 @@ export default function AuthProvider({ children }) {
 
   const refreshAccessToken = async () => {
     try {
+      console.log("llego a la funcion",refreshToken,accessToken)
       if (!refreshToken) {
         throw new Error("no hay refresh token disponble");
       }
-      const urlapi = import.meta.env.VITE_URL_BACK || "http://localhost:3000"; //https://vercel.miproyecto.com
+      const urlapi = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
       const response = await fetch(`${urlapi}/api/user/token`, {
         method: "POST",
         headers: {
@@ -99,31 +100,35 @@ export default function AuthProvider({ children }) {
         },
       });
       if (!response.ok) {
-        logout()
-        throw new Error("error al obtener el accesstoken");
+        // No hacer logout automáticamente, dejar que el componente decida
+        throw new Error(`Error ${response.status}: No se pudo refrescar el token`);
       }
-
+      
       const responseJson = await response.json();
       // El backend devuelve accesstoken y refreshtoken en minúsculas
-      const accessToken = responseJson.data.accesstoken;
-      //const refreshToken = responseJson.data.refreshtoken;
+      const newAccessToken = responseJson.data.accesstoken;
+      const newRefreshToken = responseJson.data.refreshtoken;
 
-      /*const userData = accessToken
-        ? JSON.parse(atob(accessToken.split(".")[1]))
+      const userData = newAccessToken
+        ? JSON.parse(atob(newAccessToken.split(".")[1]))
         : null;
 
-      
-      setRefreshToken(refreshToken)
-      setUser(userData)*/
-      setAccessToken(accessToken)
-      localStorage.setItem("accessToken", accessToken);
-      //localStorage.setItem("refreshToken", refreshToken);
-      //localStorage.setItem("user", JSON.stringify(userData));
+      // Actualizar el estado
+      setAccessToken(newAccessToken);
+      setRefreshToken(newRefreshToken);
+      setUser(userData);
 
-      return { accessToken, refreshToken }
+      // Actualizar localStorage
+      localStorage.setItem("accessToken", newAccessToken);
+      localStorage.setItem("refreshToken", newRefreshToken);
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      console.log("llego al final de la funcion",newRefreshToken,newAccessToken)
+
+      return { accessToken: newAccessToken, refreshToken: newRefreshToken, user: userData };
     } catch (error) {
         console.log("error al actualizar el token: ", error)
-        logout()
+        // No hacer logout automáticamente aquí tampoco
         return null
     }
   };
