@@ -1,82 +1,67 @@
 import { useState, useEffect } from "react";
 import { CartContext } from "./CartContext";
+import { useAuth } from "./useAuth";
+import { toast } from "react-toastify";
 
 function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
+  const { user } = useAuth()
+  const urlapi = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
-  /*
-  titulo
-  precio
-  desc
-  img
-  cantidad
-  subtotal
-  */
+  async function peticionesCart(url,metodo="GET",body = null) {
+    try {
+      const opciones = {
+      method:metodo,
+      headers:{"Content-Type":"application/json"},
+    }
+    if(body) opciones.body = JSON.stringify(body)
+    const response = await fetch(url,opciones)
+    if(response.ok){
+      const responseJson = response.json()
+      setCart(responseJson.data)
+    }else{
+      toast.error("error al hacer la peticon:",metodo,url)
+    }
+    } catch (error) {
+      console.log(error)
+    }
+    
+  }
 
   useEffect(() => {
-    const localCart = localStorage.getItem("cart");
-    if (localCart) {
-      setCart(JSON.parse(localCart));
+    if(user?.id){
+      peticionesCart(urlapi+"/api/cart")
     }
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
-
-  function addProductToCart(product, quantity = 1) {
-    setCart((prevCart) => {
-      const existeItem = prevCart.find((item) => item.id === product.id);
-      if (existeItem) {
-        return prevCart.map((item) =>
-          item.id === product.id
-            ? {
-                ...item,
-                quantity: item.quantity + quantity,
-                subTotal: item.price * (item.quantity + quantity),
-              }
-            : item
-        );
-      } else {
-        return [
-          ...prevCart,
-          {
-            id: product.id,
-            title: product.title,
-            price: product.price,
-            image: product.image,
-            quantity: quantity,
-            subTotal: product.price * quantity,
-          },
-        ];
-      }
-    });
+  async function addProductToCart(product, quantity = 1) {
+    await peticionesCart(urlapi+"/api/cart/add","POST",{idProducto:product._id,quantity})
   }
 
-  function deleteProduct(productId) {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+  async function deleteProduct(productId) {
+    await peticionesCart(urlapi+"/api/cart/remove","POST",{idProducto:productId})
   }
 
-  function addOneProduct(productId) {
-     setCart((prevCart)=>prevCart.map(item=> item.id===productId ? {...item,quantity:item.quantity+1,subTotal:((item.quantity+1)*item.price)} : item ))
+  async function addOneProduct(productId) {
+     await peticionesCart(urlapi+"/api/cart/add","POST",{idProducto:productId,quantity:1})
   }
 
-  function removeOneProduct(productId) {
-    setCart((prevCart)=>prevCart.map(item=> item.id===productId && item.quantity>1 ? {...item,quantity:item.quantity-1,subTotal:((item.quantity-1)*item.price)} : item ))
-    cart.map(item=> item.id===productId && item.quantity == 1 ? deleteProduct(productId) : item )
-
+  async function removeOneProduct(productId) {
+    await peticionesCart(urlapi+"/api/cart/removeOne","POST",{idProducto:productId})
   }
 
-  function clearCart() {
-    setCart([]);
+  async function clearCart() {
+    await peticionesCart(urlapi+"/api/cart/clear","POST")
   }
 
   function getTotal() {
-    return cart.reduce((total,item)=> total+(item.subTotal),0).toFixed(2)
+    if(!cart || !cart.detalle) return 0
+    return cart.detalle.reduce((total,item)=> total+(item.quantity*item.price),0).toFixed(2)
   }
 
   function getTotalItems() {
-    return cart.reduce((cantidadItems,item)=> cantidadItems+(item.quantity),0)
+    if(!cart || !cart.detalle) return 0
+    return cart.detalle.reduce((cantidadItems,item)=> cantidadItems+(item.quantity),0)
   }
 
   const value = {
