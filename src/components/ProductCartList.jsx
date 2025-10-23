@@ -3,7 +3,14 @@ import CartProduct from "./CartProduct";
 
 function ProductCartList() {
   const { cart } = useCart();
-  return cart.map((item) => (<CartProduct key={item.id} item={item}/>));
+
+  if (!cart || !cart.detalle || cart.detalle.length === 0) {
+    return <p>No hay productos en el carrito</p>;
+  }
+
+  return cart.detalle.map((item) => (
+    <CartProduct key={item._id} item={item} />
+  ));
 }
 
 export default ProductCartList;

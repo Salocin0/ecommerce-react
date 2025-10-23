@@ -2,10 +2,12 @@ import useCart from "../hooks/useCart";
 import ProductCartList from "../components/ProductCartList";
 import TotalCarrito from "../components/TotalCarrito";
 
+
 function Cart() {
   const { cart } = useCart();
 
-  if (cart.length === 0) {
+
+  if (!cart || !cart.detalle || cart.detalle.length === 0) {
     return (
       <div className="relative min-h-screen text-white overflow-hidden bg-gray-700 pt-16 ">
         <h1 className="text-emerald-400 text-center text-5xl font-bold mb-4">
