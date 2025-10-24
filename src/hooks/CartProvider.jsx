@@ -6,7 +6,43 @@ import { toast } from "react-toastify";
 function CartProvider({ children }) {
   const [cart, setCart] = useState(null);
   const { user, accessToken, refreshAccessToken } = useAuth()
+  const [intentoPago,setIntentoPago] = useState(null)
   const urlapi = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
+  const crearIntentoPago = async () =>{
+    if(!cart || !cart.detalle || cart.detalle.length == 0){
+      setIntentoPago(null)
+      return
+    }
+
+    try{
+      const total = Math.round(getTotal()*100)
+      const response = await fetch(`${urlapi}/create-payment-intent`,{
+        method:"POST",
+        headers: { "Content-Type": "application/json", "Authorization": `${accessToken}` },
+        body:
+          JSON.stringify({
+            amount:total
+          })
+      })
+      if (response.ok){
+        const {clientSecret} = await response.json()
+        setIntentoPago({clientSecret,amount:total|| 1000})
+        toast.success("intento de pago guardado")
+      }
+    }catch(e){
+      console.log(e)
+      toast.error("error al obtener y guardar intento de pago")
+    }
+  }
+
+
+
+
+
+
+
+
 
   const peticionesCart = useCallback(async (url, metodo = "GET", body = null, retryCount = 0) => {
     try {
@@ -50,6 +86,7 @@ function CartProvider({ children }) {
     } else {
       // Limpiar carrito cuando no hay usuario logueado
       setCart(null)
+      setIntentoPago(null)
     }
   }, [user?.id, peticionesCart, urlapi]);
 
@@ -85,6 +122,7 @@ function CartProvider({ children }) {
 
   const value = {
     cart,
+    intentoPago,
     addProductToCart,
     deleteProduct,
     addOneProduct,
@@ -92,6 +130,7 @@ function CartProvider({ children }) {
     clearCart,
     getTotal,
     getTotalItems,
+    crearIntentoPago
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

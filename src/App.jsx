@@ -12,6 +12,7 @@ import CartProvider from "./hooks/CartProvider";
 import AuthProvider from "./hooks/AuthProvider";
 import { ToastContainer } from "react-toastify";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Checkout from "./pages/Checkout";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Route path="/dashboard" element={<ProtectedRoute requereAdmin={true}><Dashboard /></ProtectedRoute>} />
             {/*rutas para el user*/}
             <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+            <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
             {/*rutas para el vendedor*/}
             
           </Routes>

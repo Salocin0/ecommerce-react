@@ -1,11 +1,17 @@
 import useCart from "../hooks/useCart";
 import ProductCartList from "../components/ProductCartList";
 import TotalCarrito from "../components/TotalCarrito";
+import { useEffect } from "react";
 
 
 function Cart() {
-  const { cart } = useCart();
+  const { cart,crearIntentoPago } = useCart();
 
+  useEffect(()=>{
+ 
+      crearIntentoPago()
+
+  },[])
 
   if (!cart || !cart.detalle || cart.detalle.length === 0) {
     return (
