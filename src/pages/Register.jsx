@@ -1,5 +1,5 @@
 import { useState } from "react";
-import FormInput from "../components/formInput";
+import FormInput from "../components/FormInput";
 import { useNavigate } from "react-router-dom";
 import { User, Mail, Calendar } from "lucide-react";
 import { toast } from "react-toastify";
