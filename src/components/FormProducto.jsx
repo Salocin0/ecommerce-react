@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import FormInput from "./formInput";
+import FormInput from "./FormInput";
 import { useState } from "react";
 import { PencilLine, DollarSign, Image } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
