@@ -34,7 +34,7 @@ function Register() {
     }
 
     try {
-      const urlapi = import.meta.env.VITE_URL_BACK || "http://localhost:3000"; 
+      const urlapi = import.meta.env.VITE_URL_BACK; 
       const response = await fetch(`${urlapi}/api/user/register`,{
         method:"POST",
         headers:{

@@ -7,7 +7,9 @@ function useCategories(){
 
     async function fetchProducts() {
         try{
-            const response = await fetch("http://localhost:3000/api/category")
+            const apiBaseUrl =
+      import.meta.env.VITE_API_BASE_URL
+            const response = await fetch(`${apiBaseUrl}/api/category`)
             if(!response.ok){
                 throw new Error("Error en la peticion")
             }

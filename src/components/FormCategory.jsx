@@ -31,7 +31,9 @@ function FormCategory(){
     async function saveCategory(e){
         e.preventDefault();
         console.log(formData)
-        const respuesta = await fetch("http://localhost:3000/api/category",{ //www.midominio.com/api/category
+        const apiBaseUrl =
+      import.meta.env.VITE_API_BASE_URL
+        const respuesta = await fetch(`${apiBaseUrl}/api/category`,{ //www.midominio.com/api/category
           method:"POST",
           body:JSON.stringify(formData),
           headers:{
