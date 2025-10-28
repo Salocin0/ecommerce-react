@@ -2,7 +2,7 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-const StripeForm = ({ intentoPago, total =1000, cleanCart,user }) => {
+const StripeForm = ({ intentoPago, total = 1000, cleanCart,user }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(true);

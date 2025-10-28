@@ -1,4 +1,4 @@
-import Tabs from "../components/tabs"
+import Tabs from "../components/Tabs"
 import { useState } from "react"
 import FormProducto from "../components/FormProducto"
 import TableProductList from "../components/TableProductList"
