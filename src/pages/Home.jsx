@@ -22,7 +22,7 @@ function Home() {
 
   useEffect(() => {
     const fetchPaginado = async () => {
-      const apiBaseUrl = import.meta.env.VITE_URL_BACK;
+      const apiBaseUrl = import.meta.env.VITE_URL_BACK || 'http://localhost:3000';
       const response = await fetch(
         `${apiBaseUrl}/api/products/paginado?limit=${limit}&page=${page}`
       );
