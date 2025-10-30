@@ -10,10 +10,10 @@ import { Elements } from "@stripe/react-stripe-js";
 import { ArrowLeft, ShoppingCart } from "lucide-react";
 
 // Configurar Stripe (reemplaza con tu clave pública)
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_test_...");
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_SECRET || "pk_test_...");
 
 const Checkout = () => {
-  const { cart, getTotal, cleancart, getTotalItems, intentoPago } = useCart();
+  const { cart, getTotal, clearCart, getTotalItems, intentoPago } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -80,7 +80,7 @@ const Checkout = () => {
               <StripeForm
                 paymentIntent={intentoPago}
                 getTotal={getTotal}
-                clearCart={cleancart}
+                clearCart={clearCart}
                 shippingInfo={shippingInfo}
               />
             </div>

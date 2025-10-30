@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { CreditCard, Shield } from "lucide-react";
 
-const StripeForm = ({ intentoPago, getTotal, shippingInfo }) => {
+const StripeForm = ({ paymentIntent, getTotal, shippingInfo,clearCart }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -37,13 +37,13 @@ const StripeForm = ({ intentoPago, getTotal, shippingInfo }) => {
     setLoading(true);
 
     try {
-      console.log(intentoPago);
-      /*if (!intentoPago || !intentoPago.clientSecret) {
+      console.log(paymentIntent);
+      /*if (!paymentIntent || !paymentIntent.clientSecret) {
         console.log("intento de pago error");
         throw new Error("No se encontró un PaymentIntent válido. Intente recargar la página.");
       }*/
 
-      const clientSecret = intentoPago.clientSecret;
+      const clientSecret = paymentIntent.clientSecret;
       console.log('Usando PaymentIntent existente:', clientSecret ? 'Presente' : 'Ausente');
 
       const { error } = await stripe.confirmCardPayment(clientSecret, {
@@ -63,11 +63,12 @@ const StripeForm = ({ intentoPago, getTotal, shippingInfo }) => {
       } else {
         toast.success("¡Pago realizado exitosamente!");
         navigate("/resumenPago");
-        //cleanCart()
+        clearCart()
       }
     } catch (error) {
       toast.error("Error al procesar el pago");
       console.log(error);
+      navigate("/errorPago");
     } finally {
       setLoading(false);
     }
