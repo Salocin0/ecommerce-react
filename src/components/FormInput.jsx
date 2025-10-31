@@ -6,6 +6,7 @@ function FormInput({
   onChangeFn,
   isRequired = true,
   icon,
+  name
 }) {
   return (
     <div className="flex flex-col text-gray-300 w-full">
@@ -20,6 +21,7 @@ function FormInput({
         onChange={onChangeFn}
         required={isRequired}
         className="w-full px-6 py-3 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+        name={name}
       />
     </div>
   );

@@ -59,10 +59,11 @@ const StripeForm = ({ paymentIntent, getTotal, shippingInfo,clearCart }) => {
       if (error) {
         toast.error(`Error en el pago: ${error.message}`);
         console.log(error.message);
-        navigate("/errorPago");
+        navigate("/errorPay");
       } else {
         toast.success("¡Pago realizado exitosamente!");
-        navigate("/resumenPago");
+        navigate("/successPay");
+        //registrar pedido en db
         clearCart()
       }
     } catch (error) {
