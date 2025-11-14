@@ -3,6 +3,7 @@ import { useState } from "react"
 import FormProducto from "../components/FormProducto"
 import TableProductList from "../components/TableProductList"
 import FormCategory from "../components/FormCategory"
+import Estadisticas from "../components/Estadisticas"
 function Dashboard (){
     const [activeTab,setActiveTab] = useState(1)
     return(
@@ -13,7 +14,7 @@ function Dashboard (){
                 {activeTab==1 && <FormProducto/>}
                 {activeTab==2 && <TableProductList/>}
                 {activeTab==3 && <FormCategory/>}
-                {activeTab===4 && <h1 className="text-white">Tab no encontrado</h1>}
+                {activeTab===4 && <Estadisticas/>}
             </div>
         </div>
     )

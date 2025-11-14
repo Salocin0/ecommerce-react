@@ -2,6 +2,7 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import useCart from "../hooks/useCart";
 import { CreditCard, Shield } from "lucide-react";
 
 const StripeForm = ({ paymentIntent, getTotal, shippingInfo,clearCart }) => {
@@ -9,6 +10,7 @@ const StripeForm = ({ paymentIntent, getTotal, shippingInfo,clearCart }) => {
   const elements = useElements();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const {crearPedido} = useCart()
 
   const cardStyle = {
     style: {
@@ -63,7 +65,7 @@ const StripeForm = ({ paymentIntent, getTotal, shippingInfo,clearCart }) => {
       } else {
         toast.success("¡Pago realizado exitosamente!");
         navigate("/successPay");
-        //registrar pedido en db
+        crearPedido()
         clearCart()
       }
     } catch (error) {

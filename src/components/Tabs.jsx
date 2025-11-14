@@ -1,4 +1,4 @@
-import { PlusCircle,ShoppingBasket } from "lucide-react"
+import { PlusCircle,ShoppingBasket,ChartBar } from "lucide-react"
 
 
 const tabs =[
@@ -15,6 +15,11 @@ const tabs =[
         id:3,
         label:"Create Category",
         icon:PlusCircle
+    },
+    {
+        id:4,
+        label:"Estadisticas",
+        icon: ChartBar
     }
 ]
 
